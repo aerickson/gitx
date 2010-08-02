@@ -314,12 +314,12 @@ NSString *PBGitIndexOperationFailed = @"PBGitIndexOperationFailed";
 - (void)discardChangesForFiles:(NSArray *)discardFiles
 {
 	NSArray *paths = [discardFiles valueForKey:@"path"];
-	NSString *input = [paths componentsJoinedByString:@"\0"];
+	NSString *input = [paths componentsJoinedByString:@" "];
 
-	NSArray *arguments = [NSArray arrayWithObjects:@"checkout-index", @"--index", @"--quiet", @"--force", @"-z", @"--stdin", nil];
+	NSArray *arguments = [NSArray arrayWithObjects:@"checkout", @"--quiet", @"--force", input, nil];
 
 	int ret = 1;
-	[PBEasyPipe outputForCommand:[PBGitBinary path]	withArgs:arguments inDir:[workingDirectory path] inputString:input retValue:&ret];
+	[PBEasyPipe outputForCommand:[PBGitBinary path]	withArgs:arguments inDir:[workingDirectory path] retValue:&ret];
 
 	if (ret) {
 		[self postOperationFailed:[NSString stringWithFormat:@"Discarding changes failed with return value %i", ret]];
